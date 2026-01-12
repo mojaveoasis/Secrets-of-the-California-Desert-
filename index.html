@@ -43,7 +43,7 @@ map.on('load', () => {
     const p = e.features[0].properties;
     new maplibregl.Popup()
       .setLngLat(e.lngLat)
-      .setHTML('<strong>' + p.id + '</strong><br>' + p.Description + '<br><a href="' + p.URL + '" target="_blank">Read more</a>')
+      .setHTML('<strong>' + p.id + '</strong><br>' + p.description + '<br><a href="' + p.URL + '" target="_blank">Read more</a>')
       .addTo(map);
   });
 
