@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Clickable Map</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.css" rel="stylesheet" />
+<script src="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.js"></script>
+<style>
+  body { margin: 0; padding: 0; }
+  #map { width: 100vw; height: 100vh; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+const map = new maplibregl.Map({
+  container: 'map',
+  style: 'https://demotiles.maplibre.org/style.json',
+  center: [-116.5, 36.2],
+  zoom: 6
+});
+
+map.on('load', () => {
+  map.addSource('points', {
+    type: 'geojson',
+    data: 'desert_points.geojson'
+  });
+
+  map.addLayer({
+    id: 'points-layer',
+    type: 'circle',
+    source: 'points',
+    paint: {
+      'circle-radius': 6,
+      'circle-color': '#e63946',
+      'circle-stroke-width': 1,
+      'circle-stroke-color': '#000'
+    }
+  });
+
+  map.on('click', 'points-layer', (e) => {
+    const p = e.features[0].properties;
+    new maplibregl.Popup()
+      .setLngLat(e.lngLat)
+      .setHTML('<strong>' + p.name + '</strong><br>' + p.description + '<br><a href="' + p.url + '" target="_blank">More info</a>')
+      .addTo(map);
+  });
+
+  map.on('mouseenter', 'points-layer', () => {
+    map.getCanvas().style.cursor = 'pointer';
+  });
+});
+</script>
+</body>
+</html>
