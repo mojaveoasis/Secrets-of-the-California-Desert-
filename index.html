@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title>Clickable Desert Map</title>
+<title>Secrets-of-the-Caliofrnia-Desert</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link href="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.css" rel="stylesheet" />
 <script src="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.js"></script>
@@ -17,51 +17,41 @@
 const map = new maplibregl.Map({
   container: 'map',
   style: 'https://demotiles.maplibre.org/style.json',
-  center: [-116.5, 36.2], // adjust as needed
+  center: [-116.5, 36.2],
   zoom: 6
 });
 
 map.on('load', () => {
-  // Add your points as a source
   map.addSource('points', {
     type: 'geojson',
     data: 'DesertLinks.geojson'
   });
 
-  // Add the points layer
   map.addLayer({
     id: 'points-layer',
     type: 'circle',
     source: 'points',
     paint: {
-      'circle-radius': 6,
+      'circle-radius': 8,
       'circle-color': '#e63946',
       'circle-stroke-width': 1,
       'circle-stroke-color': '#000'
     }
   });
 
-  // Ensure layer is interactive
+  // Force layer to be interactive
   map.on('click', 'points-layer', (e) => {
     if (!e.features || !e.features.length) return;
-    const feature = e.features[0].properties;
+    const props = e.features[0].properties;
     new maplibregl.Popup()
       .setLngLat(e.lngLat)
-      .setHTML(
-        '<strong>' + feature.id + '</strong><br>' +
-        feature.description + '<br>' +
-        '<a href="' + feature.URL + '" target="_blank">Read more</a>'
-      )
+      .setHTML('<strong>' + props.id + '</strong><br>' + props.description + '<br><a href="' + props.URL + '" target="_blank">Read more</a>')
       .addTo(map);
   });
 
-  // Change cursor on hover
-  map.on('mouseenter', 'points-layer', () => {
-    map.getCanvas().style.cursor = 'pointer';
-  });
-  map.on('mouseleave', 'points-layer', () => {
-    map.getCanvas().style.cursor = '';
-  });
+  // Cursor changes to pointer
+  map.on('mouseenter', 'points-layer', () => { map.getCanvas().style.cursor = 'pointer'; });
+  map.on('mouseleave', 'points-layer', () => { map.getCanvas().style.cursor = ''; });
 });
 </script>
 </body>
